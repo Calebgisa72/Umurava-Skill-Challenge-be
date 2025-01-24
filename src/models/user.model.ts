@@ -10,7 +10,7 @@ export interface IUser extends Document {
   password: string;
   fullname: string;
   profilePic?: string | null;
-  role?: UserRole;
+  role: UserRole;
 }
 
 const userSchema = new Schema<IUser>(
