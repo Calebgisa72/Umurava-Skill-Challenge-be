@@ -1,15 +1,15 @@
 import { Router, Request, Response } from 'express';
+import { loginUser, signupUser } from '../controllers/user.contollers';
 import { successResponse } from '../utils/responses.utils';
-import userRoutes from './user.routes';
 
 const router = Router();
 
-//Endpoint to test the API
 router.get('/', (req: Request, res: Response) => {
-  successResponse(res, 200, 'Welcome to the Skill Challenge API! Everything is running smoothly.');
-  return;
-});
+    successResponse(res, 200, 'user routes');
+    return;
+  });
 
-router.use('/user', userRoutes);
+router.post('/register', signupUser);
+router.post('/login', loginUser);
 
 export default router;
