@@ -14,13 +14,6 @@ declare global {
     }
   }
 }
-interface IJwtPayload extends jwt.JwtPayload {
-  userId: string;
-  email: string;
-  role: string;
-  iat: number;
-  exp: number;
-}
 
 const authorize = async (req: Request, res: Response, next: NextFunction) => {
   try {
