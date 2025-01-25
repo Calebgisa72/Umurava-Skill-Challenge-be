@@ -9,6 +9,7 @@ export const generateToken = (payload: any): string => {
 
 export const verifyToken = (token: string): any => {
   try {
+    if (!secretKey) throw new AppError('Missing secret key', 500, ErrorCodes.INTERNAL_ERROR);
     return jwt.verify(token, secretKey);
   } catch (error) {
     throw new AppError('Invalid Token', 401, ErrorCodes.INVALID_TOKEN);
