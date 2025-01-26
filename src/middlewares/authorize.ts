@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { AppFailure } from '../utils/errors.utils';
+import { AppError, AppFailure, ErrorCodes } from '../utils/errors.utils';
 import jwt from 'jsonwebtoken';
 import User, { UserRole } from '../models/user.model';
 import { verifyToken } from '../utils/token.utils';
@@ -20,15 +20,15 @@ const authorize = async (req: Request, res: Response, next: NextFunction) => {
     const authHeader = req.headers.authorization;
     let decodedToken;
 
-    if (authHeader !== undefined) {
-      const [bearer, token] = authHeader.split(' ');
-
-      if (bearer !== 'Bearer' || token === undefined) {
-        throw new AppFailure('Access denied. No token provided.', 401);
-      }
-      decodedToken = verifyToken(token);
+    if (authHeader === undefined) {
+      throw new AppError('AuthHeader not field', 401, ErrorCodes.RESOURCE_NOT_FOUND);
     }
-
+    const [bearer, token] = authHeader.split(' ');
+    if (bearer !== 'Bearer' || token === undefined) {
+      throw new AppFailure('Access denied. No token provided.', 401);
+    }
+    decodedToken = verifyToken(token);
+    
     // User Authorization
     const user = await User.findById(decodedToken.userId);
 

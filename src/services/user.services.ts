@@ -1,3 +1,4 @@
+import { Request } from 'express';
 import User, { IUser } from '../models/user.model';
 import { ErrorCodes, AppError } from '../utils/errors.utils';
 import bcrypt from 'bcrypt';
@@ -6,6 +7,13 @@ import { generateToken } from '../utils/token.utils';
 interface LoginCredentials {
   email: string;
   password: string;
+}
+
+interface updateProfileProps {
+  userId: string;
+  password?: string;
+  fullname?: string;
+  profilePic: string;
 }
 
 export const createUserService = async ({ email, password, fullname }: IUser) => {
@@ -42,4 +50,56 @@ export const loginUserService = async ({ email, password }: LoginCredentials) =>
   } else {
     throw new AppError('Invalid email or password', 409, ErrorCodes.INVALID_INPUT);
   }
+};
+
+export const updateUserProfileService = async ({ userId, password, fullname, profilePic }: updateProfileProps) => {
+  const user = await User.findById(userId);
+
+  if (!user) {
+    throw new AppError('User not found', 404, ErrorCodes.INVALID_INPUT);
+  }
+
+  const isSameFullname = fullname ? fullname === user.fullname : true;
+  const isSameProfilePic = profilePic ? profilePic === user.profilePic : true;
+  const isSamePassword = password ? await bcrypt.compare(password, user.password) : true;
+
+  if (isSameFullname && isSameProfilePic && isSamePassword) {
+    const sanitizedUserInfo = user.toObject() as Record<string, any>;
+    delete sanitizedUserInfo.password;
+  
+    return {
+      sanitizedUserInfo,
+      message: 'No changes detected in the provided data.',
+      statusCode: 200,
+    };
+  }
+
+  const updateFields: Partial<IUser> = {};
+
+  if (fullname) {
+    updateFields.fullname = fullname;
+  }
+
+  if (profilePic) {
+    updateFields.profilePic = profilePic;
+  }
+
+  if (password) {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    updateFields.password = hashedPassword;
+  }
+
+  const updatedUser = await User.findByIdAndUpdate(userId, updateFields, { new: true });
+
+  if (!updatedUser) {
+    throw new AppError('Error updating user profile', 500, ErrorCodes.DATABASE);
+  }
+
+  const sanitizedUserInfo = updatedUser.toObject() as Record<string, any>;
+  delete sanitizedUserInfo.password;
+
+  const message = 'User profile updated successfully.';
+  const statusCode = 200;
+
+  return { sanitizedUserInfo, message, statusCode };
 };
