@@ -50,7 +50,7 @@ export const loginValidationSchema = Joi.object({
 export const updateProfileValidationSchema = Joi.object({
   password: passwordSchema.optional(),
   fullname: fullnameSchema.optional(),
-  profilePic: Joi.string().optional().messages({
+  profilePic: Joi.string().uri().optional().messages({
     'string.base': 'Profile pic must be a string',
   }),
 })

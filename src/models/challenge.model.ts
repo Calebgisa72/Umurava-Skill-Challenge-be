@@ -50,7 +50,9 @@ export interface IChallenge extends Document {
   projectBrief: string;
   projectDescription: string;
   deadline: Date;
+  duration: string;
   prize: Prize[];
+  contactEmail: string;
   projectTasks: string;
   neededSkills: string[];
   seniorityLevel: seniorityLevel;
@@ -65,7 +67,9 @@ const challengeSchema = new Schema<IChallenge>(
     projectBrief: { type: String, required: true },
     projectDescription: { type: String, required: true },
     deadline: { type: Date, required: true },
+    duration: { type: String, default: null },
     prize: { type: [prizeSchema], required: true },
+    contactEmail: { type: String, required: true },
     projectTasks: { type: String, required: true },
     neededSkills: { type: [String], required: true },
     seniorityLevel: { type: String, enum: Object.values(seniorityLevel), required: true },
