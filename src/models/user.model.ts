@@ -19,7 +19,7 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true },
     fullname: { type: String, required: true },
     profilePic: { type: String, default: null },
-    role: { type: String, required: true, default: UserRole.TALENT },
+    role: { type: String, enum: Object.values(UserRole), required: true, default: UserRole.TALENT },
   },
   {
     timestamps: true,
