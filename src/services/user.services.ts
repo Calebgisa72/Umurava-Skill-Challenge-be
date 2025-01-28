@@ -1,4 +1,3 @@
-import { Request } from 'express';
 import User, { IUser } from '../models/user.model';
 import { ErrorCodes, AppError } from '../utils/errors.utils';
 import bcrypt from 'bcrypt';
