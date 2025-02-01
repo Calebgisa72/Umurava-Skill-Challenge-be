@@ -1,6 +1,7 @@
 import { Router, Request, Response } from 'express';
 import { successResponse } from '../utils/responses.utils';
 import userRoutes from './user.routes';
+import challengeRoutes from './challenge.routes';
 
 const router = Router();
 
@@ -11,5 +12,6 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 router.use('/user', userRoutes);
+router.use('/challenge', challengeRoutes);
 
 export default router;

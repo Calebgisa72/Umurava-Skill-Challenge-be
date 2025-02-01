@@ -44,7 +44,7 @@ const prizeSchema = new Schema<Prize>(
   { _id: false }
 );
 
-export interface IChallenge extends Document {
+export interface IChallenge {
   thumbnail: string;
   title: string;
   projectBrief: string;
@@ -54,13 +54,14 @@ export interface IChallenge extends Document {
   prize: Prize[];
   contactEmail: string;
   projectTasks: string;
+  status?: status;
   neededSkills: string[];
   seniorityLevel: seniorityLevel;
-  createdAt?: Date;
-  updatedAt?: Date;
 }
 
-const challengeSchema = new Schema<IChallenge>(
+export type ChallengeDocument = Document & IChallenge;
+
+const challengeSchema = new Schema<ChallengeDocument>(
   {
     thumbnail: { type: String, required: true },
     title: { type: String, required: true, unique: true },
@@ -72,6 +73,7 @@ const challengeSchema = new Schema<IChallenge>(
     contactEmail: { type: String, required: true },
     projectTasks: { type: String, required: true },
     neededSkills: { type: [String], required: true },
+    status: { type: String, enum: Object.values(status), default: status.OPEN },
     seniorityLevel: { type: String, enum: Object.values(seniorityLevel), required: true },
   },
   {

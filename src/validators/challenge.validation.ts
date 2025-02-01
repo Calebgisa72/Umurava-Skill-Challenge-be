@@ -14,23 +14,23 @@ const titleSchema = Joi.string().min(20).max(50).required().messages({
   'any.required': 'Title is required.',
 });
 
-const projectBriefSchema = Joi.string().min(40).max(50).required().messages({
+const projectBriefSchema = Joi.string().min(20).max(50).required().messages({
   'string.base': 'Project brief must be a string.',
-  'string.min': 'Project brief must be at least 40 characters long.',
+  'string.min': 'Project brief must be at least 20 characters long.',
   'string.max': 'Project brief must not exceed 50 characters.',
   'any.required': 'Project brief is required.',
 });
 
-const projectDescriptionSchema = Joi.string().min(230).max(250).required().messages({
+const projectDescriptionSchema = Joi.string().min(50).max(250).required().messages({
   'string.base': 'Project description must be a string.',
-  'string.min': 'Project description must be at least 230 characters long.',
+  'string.min': 'Project description must be at least 50 characters long.',
   'string.max': 'Project description must not exceed 250 characters.',
   'any.required': 'Project description is required.',
 });
 
-const projectTasksSchema = Joi.string().min(450).max(500).required().messages({
+const projectTasksSchema = Joi.string().min(50).max(500).required().messages({
   'string.base': 'Project tasks must be a string.',
-  'string.min': 'Project tasks must be at least 450 characters long.',
+  'string.min': 'Project tasks must be at least 50 characters long.',
   'string.max': 'Project tasks must not exceed 500 characters.',
   'any.required': 'Project tasks are required.',
 });
@@ -92,11 +92,9 @@ const skillsNeededSchema = Joi.array().items(Joi.string().required()).min(1).req
 
 const statusSchema = Joi.string()
   .valid(...Object.values(status))
-  .required()
   .messages({
     'string.base': 'Status must be a string.',
     'any.only': `Status must be one of the allowed values. ${status.COMPLETED}, ${status.ONGOING}, ${status.OPEN}`,
-    'any.required': 'Status is required.',
   });
 
 const seniorityLevelSchema = Joi.string()
@@ -117,8 +115,40 @@ export const challengeValidationSchema = Joi.object({
   deadline: deadlineSchame,
   duration: durationSchema,
   prize: prizeSchema,
-  contact_email: contact_emailSchema,
-  skillsNeeded: skillsNeededSchema,
+  contactEmail: contact_emailSchema,
+  neededSkills: skillsNeededSchema,
   status: statusSchema,
   seniorityLevel: seniorityLevelSchema,
 });
+
+export const updatechallengeValidationSchema = Joi.object({
+  thumbnail: thumbnailSchema.optional(),
+  title: titleSchema.optional(),
+  projectBrief: projectBriefSchema.optional(),
+  projectDescription: projectDescriptionSchema.optional(),
+  projectTasks: projectTasksSchema.optional(),
+  deadline: deadlineSchame.optional(),
+  duration: durationSchema.optional(),
+  prize: prizeSchema.optional(),
+  contactEmail: contact_emailSchema.optional(),
+  neededSkills: skillsNeededSchema.optional(),
+  status: statusSchema.optional(),
+  seniorityLevel: seniorityLevelSchema.optional(),
+})
+  .or(
+    'thumbnail',
+    'title',
+    'projectBrief',
+    'projectDescription',
+    'projectTasks',
+    'deadline',
+    'duration',
+    'prize',
+    'contactEmail',
+    'neededSkills',
+    'status',
+    'seniorityLevel'
+  )
+  .messages({
+    'object.missing': 'At least one field must be provided',
+  });
